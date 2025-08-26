@@ -27,11 +27,19 @@ export default function PostModal({ post, onClose }) {
                         <p><strong>Luogo:</strong> {post.location_name}</p>
                         <p><strong>Data:</strong> {new Date(post.created_at).toLocaleString()}</p>
                         <p><strong>Descrizione:</strong> {post.description}</p>
+                        <p><strong>Umore:</strong>{post.moods ? post.moods.name : 'Nessun mood'}</p>
                         <p><strong>Riflessione positiva:</strong> {post.reflection_positive}</p>
                         <p><strong>Riflessione negativa:</strong> {post.reflection_negative}</p>
                         <p><strong>Sforzo fisico:</strong> {post.physical_effort}</p>
                         <p><strong>Sforzo economico:</strong> {post.economic_effort}</p>
                         <p><strong>Costo:</strong> {post.cost} €</p>
+                        <p><strong>Tags:</strong> {' '}
+                            {post.post_tags?.map(pt => pt.tags.name).join(', ') || 'Nessun tag'}</p>
+                        <div>
+                            {(Array.isArray(post.tags) ? post.tags : post.tags?.split(',').map(t => t.trim()) || []).map((tag, i) => (
+                                <span key={i} className="badge bg-primary me-1">{tag}</span>
+                            ))}
+                        </div>
                         {post.media_url && (
                             <img src={post.media_url} alt={post.title} className="img-fluid" />
                         )}
