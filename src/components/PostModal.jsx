@@ -24,26 +24,52 @@ export default function PostModal({ post, onClose }) {
                         <button type="button" className="btn-close" onClick={onClose}></button>
                     </div>
                     <div className="modal-body">
-                        <p><strong>Luogo:</strong> {post.location_name}</p>
-                        <p><strong>Data:</strong> {new Date(post.created_at).toLocaleString()}</p>
-                        <p><strong>Descrizione:</strong> {post.description}</p>
-                        <p><strong>Umore:</strong>{post.moods ? post.moods.name : 'Nessun mood'}</p>
-                        <p><strong>Riflessione positiva:</strong> {post.reflection_positive}</p>
-                        <p><strong>Riflessione negativa:</strong> {post.reflection_negative}</p>
-                        <p><strong>Sforzo fisico:</strong> {post.physical_effort}</p>
-                        <p><strong>Sforzo economico:</strong> {post.economic_effort}</p>
-                        <p><strong>Costo:</strong> {post.cost} €</p>
-                        <p><strong>Tags:</strong> {' '}
-                            {post.post_tags?.map(pt => pt.tags.name).join(', ') || 'Nessun tag'}</p>
-                        <div>
-                            {(Array.isArray(post.tags) ? post.tags : post.tags?.split(',').map(t => t.trim()) || []).map((tag, i) => (
-                                <span key={i} className="badge bg-primary me-1">{tag}</span>
-                            ))}
-                        </div>
                         {post.media_url && (
-                            <img src={post.media_url} alt={post.title} className="img-fluid" />
+                            <img src={post.media_url} alt={post.title} className="img-fluid rounded mb-4" />
                         )}
+
+                        <div className="row">
+                            <div className="col-md-6">
+                                <p><span className="fw-bold">Luogo:</span> {post.location_name}</p>
+                                <p>
+                                    <span className="fw-bold">Data:</span>{" "}
+                                    {new Date(post.created_at).toLocaleDateString("it-IT", {
+                                        day: "2-digit",
+                                        month: "long",
+                                        year: "numeric",
+                                    })}
+                                </p>
+                                <p><span className="fw-bold">Descrizione:</span> {post.description}</p>
+                                <p><span className="fw-bold">Umore:</span> {post.moods ? post.moods.name : "Nessun mood"}</p>
+                            </div>
+
+                            <div className="col-md-6">
+                                <p><span className="fw-bold">Riflessione positiva:</span> {post.reflection_positive}</p>
+                                <p><span className="fw-bold">Riflessione negativa:</span> {post.reflection_negative}</p>
+                                <p>
+                                    <span className="fw-bold">Sforzo fisico:</span>{" "}
+                                    <span className="badge bg-warning text-dark">{post.physical_effort}</span>
+                                </p>
+                                <p>
+                                    <span className="fw-bold">Sforzo economico:</span>{" "}
+                                    <span className="badge bg-info text-dark">{post.economic_effort}</span>
+                                </p>
+                                <p><span className="fw-bold">Costo:</span> <span className="text-success fw-bold">{post.cost} €</span></p>
+                            </div>
+                        </div>
+
+                        <div className="mt-3">
+                            <p className="fw-bold">Tags:</p>
+                            <div>
+                                {post.post_tags?.length > 0
+                                    ? post.post_tags.map((pt, i) => (
+                                        <span key={i} className="badge bg-primary me-1">{pt.tags.name}</span>
+                                    ))
+                                    : <span className="text-muted">Nessun tag</span>}
+                            </div>
+                        </div>
                     </div>
+
                     <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" onClick={onClose}>
                             Chiudi
