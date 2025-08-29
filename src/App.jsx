@@ -1,46 +1,48 @@
-import { useState, useEffect } from 'react'
-import { supabase } from './supabaseClient'
-import Timeline from './components/Timeline'
-import PostModal from './components/PostModal'
-import AddPost from './components/AddPost'
-import './App.css'
+// App.jsx
+
+import { useState, useEffect } from 'react';
+import { supabase } from './supabaseClient';
+import Timeline from './components/Timeline';
+import PostModal from './components/PostModal';
+import AddPost from './components/AddPost';
+import './App.css';
 
 function App() {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const [posts, setPosts] = useState([])
-  const [loading, setLoading] = useState(true)
+  // Stati modal
   const [selectedPost, setSelectedPost] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [addModalOpen, setAddModalOpen] = useState(false)
+  const [addModalOpen, setAddModalOpen] = useState(false);
 
-  // chiamata al database di supabase
+  // Recupero post da Supabase
   useEffect(() => {
     const fetchPosts = async () => {
       const { data, error } = await supabase
         .from('posts')
         .select(`
-        *,
-        moods(*),
-        post_tags(
-        tags(*)
-          )
+          *,
+          moods(*),
+          post_tags(tags(*))
         `)
-        .order('created_at', { ascending: false })
+      // .order('created_at', { ascending: false });
 
-      console.log("Posts caricati:", data);
+      console.log(data);
+
 
       if (error) {
-        console.error('Errore nel recupero dei post:', error)
+        console.error('Errore nel recupero dei post:', error);
       } else {
-        setPosts(data)
+        setPosts(data);
       }
-      setLoading(false)
-    }
+      setLoading(false);
+    };
 
-    fetchPosts()
-  }, [])
+    fetchPosts();
+  }, []);
 
-  // modale dettaglio post
+  // Funzioni gestione modal
   const openModal = (post) => {
     setSelectedPost(post);
     setModalOpen(true);
@@ -51,39 +53,65 @@ function App() {
     setModalOpen(false);
   };
 
-  // modale aggiunta post
-  const openAddModal = () => setAddModalOpen(true)
-  const closeAddModal = () => setAddModalOpen(false)
+  const openAddModal = () => setAddModalOpen(true);
+  const closeAddModal = () => setAddModalOpen(false);
 
-  // callback da AddPost per aggiornare la lista
+  // Aggiorna lista post dopo aggiunta
   const handlePostAdded = (newPost) => {
-    setPosts([newPost, ...posts])
-    closeAddModal() // chiude il form dopo il submit
-  }
+    setPosts([newPost, ...posts]);
+    closeAddModal();
+  };
 
-  if (loading) return <p>Caricamento in corso...</p>
+  // Elimina post
+  const handleDeletePost = async (postId) => {
+    const { error } = await supabase.from('posts').delete().eq('id', postId);
+
+    if (error) {
+      console.error("Errore nell'eliminazione del post:", error);
+    } else {
+      setPosts(posts.filter((p) => p.id !== postId));
+      closeModal();
+    }
+  };
+
+  // Modifica post
+  const handleUpdatePost = async (updatedPost) => {
+    const { error } = await supabase
+      .from('posts')
+      .update(updatedPost)
+      .eq('id', updatedPost.id);
+
+    if (error) {
+      console.error("Errore nell'aggiornamento del post:", error);
+    } else {
+      setPosts(posts.map((p) => (p.id === updatedPost.id ? updatedPost : p)));
+      closeModal();
+    }
+  };
+
+  if (loading) return <p>Caricamento in corso...</p>;
 
   return (
     <div className="container">
-      <h1 className="text-center my-4">Diario di viaggio</h1>
-
-      {/* Bottone per aprire il form */}
-      <div className="text-center mb-4">
-        <button className="btn btn-primary" onClick={openAddModal}>
-          Aggiungi Post
-        </button>
+      <div className="text-center my-4">
+        <img className="img_title" src="diario-title.png" alt="Diario di viaggio" />
       </div>
 
-      {/* Timeline dei post */}
-      {posts.length === 0 ? (
-        <p>Nessun post disponibile</p>
-      ) : (
-        <Timeline posts={posts} onPostClick={openModal} />
-      )}
+      <Timeline
+        posts={posts}
+        onPostClick={openModal}
+        onAddPostClick={openAddModal}
+        onPostAdded={handlePostAdded}
+      />
 
-      {/* Modale per il dettaglio del post */}
+      {/* Modale dettaglio post */}
       {modalOpen && (
-        <PostModal post={selectedPost} onClose={closeModal} />
+        <PostModal
+          post={selectedPost}
+          onClose={closeModal}
+          onDelete={handleDeletePost}
+          onUpdate={handleUpdatePost}
+        />
       )}
 
       {/* Modale aggiunta post */}
@@ -103,7 +131,7 @@ function App() {
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
