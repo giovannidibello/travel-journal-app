@@ -1,12 +1,26 @@
-# React + Vite
+# Diario di Viaggio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Descrizione del Progetto
+Il progetto "Diario di Viaggio" è un'applicazione web per registrare, visualizzare e gestire i propri viaggi e avventure. Consente agli utenti di aggiungere post con dettagli come titolo, descrizione, luogo, immagini/video, costo, riflessioni personali, sforzo fisico ed economico, umore e tag personalizzati.  
+I post vengono visualizzati su una **mappa interattiva** con marker personalizzati filtrabile per stato d'animo o tag.
 
-Currently, two official plugins are available:
+### Funzionalità principali
+- Creazione, modifica ed eliminazione dei post.
+- Filtri per ricerca, stato d’animo e tag.
+- Visualizzazione dei post sulla mappa con marker personalizzati.
+- Possibilità di geolocalizzazione automatica e inserimento manuale delle coordinate.
+- Gestione di media (foto/video) caricati su Supabase Storage.
+- Visualizzazione chiara di tutti i dettagli del post, inclusi mood e tag.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tecnologie utilizzate
 
-## Expanding the ESLint configuration
+| Tecnologia | Motivazione |
+|------------|------------|
+| **React** | Libreria frontend moderna e reattiva, perfetta per gestire componenti dinamici come timeline, modali e mappe. |
+| **React-Leaflet** | Per visualizzare interattivamente i post sulla mappa con marker personalizzati. |
+| **Supabase** | Backend-as-a-Service completo, utilizzato per database PostgreSQL, autenticazione e storage file. |
+| **Bootstrap & Material-UI (MUI)** | Per velocizzare lo sviluppo dell’interfaccia con componenti responsive e stili coerenti. |
+| **JavaScript (ES6+)** | Linguaggio principale per logica frontend e interazioni dinamiche. |
+| **OpenStreetMap/Nominatim** | Servizi gratuiti per mappe e geocoding. |
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
